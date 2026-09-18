@@ -57,17 +57,25 @@ function initPetals() {
   let petals = [];
 
   function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // Note: petals akan scale otomatis karena pakai koordinat absolut
   }
   resize();
   window.addEventListener('resize', resize);
 
   class Petal {
     constructor() { this.reset(true); }
-    reset(initial = false) {
-      this.x = Math.random() * canvas.width;
-      this.y = initial ? Math.random() * canvas.height : -20;
+  reset(initial = false) {
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.width / dpr;
+    const H = canvas.height / dpr;
+    this.x = Math.random() * W;
+    this.y = initial ? Math.random() * H : -20;
       this.size = 6 + Math.random() * 8;
       this.speedY = 0.5 + Math.random() * 1.2;
       this.speedX = -0.5 + Math.random();
@@ -83,7 +91,8 @@ function initPetals() {
       this.y += this.speedY;
       this.x += this.speedX + Math.sin(this.y / 60) * 0.4;
       this.rotation += this.rotSpeed;
-      if (this.y > canvas.height + 20) this.reset();
+      const dpr = window.devicePixelRatio || 1;
+      if (this.y > canvas.height / dpr + 20) this.reset();
     }
     draw() {
       ctx.save();
@@ -104,6 +113,17 @@ function initPetals() {
       }
       ctx.restore();
     }
+  }
+
+  // Handle device pixel ratio untuk canvas tajam di HP retina
+  function setupCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { ctx, dpr };
   }
 
   for (let i = 0; i < 35; i++) petals.push(new Petal());
@@ -599,3 +619,14 @@ function initScrollReveal() {
     fwObs.observe(cdSec);
   }
 }
+
+// Fix mobile viewport height
+function setVH() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+setVH();
+window.addEventListener('resize', setVH);
+window.addEventListener('orientationchange', () => {
+  setTimeout(setVH, 100);
+});

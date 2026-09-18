@@ -129,12 +129,20 @@
     }
   }
 
-  function resizeLantern() {
+    function resizeLantern() {
     if (!lanternCanvas) return;
     const rect = lanternCanvas.parentElement.getBoundingClientRect();
-    lanternCanvas.width = rect.width;
-    lanternCanvas.height = rect.height;
-  }
+    const dpr = window.devicePixelRatio || 1;
+    
+    lanternCanvas.width = rect.width * dpr;
+    lanternCanvas.height = rect.height * dpr;
+    lanternCanvas.style.width = rect.width + 'px';
+    lanternCanvas.style.height = rect.height + 'px';
+    
+    if (lanternCtx) {
+        lanternCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    }
 
   class Lantern {
     constructor(name, wish, isBackground) {
@@ -462,17 +470,33 @@
     loadSignatureWall();
   }
 
-  function resizeSignatureCanvas() {
-    const rect = sigCanvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    sigCanvas.width = rect.width * dpr;
-    sigCanvas.height = rect.height * dpr;
-    sigCtx.scale(dpr, dpr);
-    sigCtx.lineCap = 'round';
-    sigCtx.lineJoin = 'round';
-    sigCtx.strokeStyle = '#1a0f0a';
-    sigCtx.lineWidth = 2.5;
-  }
+    function resizeSignatureCanvas() {
+        const rect = sigCanvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        
+        // Simpan gambar yang sudah ada sebelum resize
+        const imageData = sigPoints.length > 0 ? sigCanvas.toDataURL() : null;
+        
+        sigCanvas.width = rect.width * dpr;
+        sigCanvas.height = rect.height * dpr;
+        sigCanvas.style.width = rect.width + 'px';
+        sigCanvas.style.height = rect.height + 'px';
+        
+        sigCtx.scale(dpr, dpr);
+        sigCtx.lineCap = 'round';
+        sigCtx.lineJoin = 'round';
+        sigCtx.strokeStyle = '#1a0f0a';
+        sigCtx.lineWidth = 2.5;
+        
+        // Restore gambar setelah resize
+        if (imageData) {
+            const img = new Image();
+            img.onload = () => {
+            sigCtx.drawImage(img, 0, 0, rect.width, rect.height);
+            };
+            img.src = imageData;
+        }
+    }
 
   function startDraw(e) {
     sigDrawing = true;
