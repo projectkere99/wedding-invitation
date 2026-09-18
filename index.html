@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>囍 Sugianto & Novi Mutirara · 百年好合 囍</title>
+  <link rel="stylesheet" href="interactive.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <div class="preloader-symbol">囍</div>
+    <p class="preloader-text">Loading the blessing...</p>
+    <div class="preloader-bar"><span></span></div>
+  </div>
+</div>
+
+<!-- CANVAS LAYERS -->
+<canvas id="petalsCanvas" class="petals-canvas"></canvas>
+<canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+<canvas id="fireworksCanvas" class="fireworks-canvas"></canvas>
+
+<!-- COVER -->
+<section class="cover" id="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-vignette"></div>
+  <div class="cover-glow"></div>
+
+  <div class="ornate-frame">
+    <div class="ornate-corner tl"></div>
+    <div class="ornate-corner tr"></div>
+    <div class="ornate-corner bl"></div>
+    <div class="ornate-corner br"></div>
+  </div>
+
+  <div class="lantern-wrap lantern-left">
+    <div class="lantern-string"></div>
+    <div class="lantern">
+      <div class="lantern-top"></div>
+      <div class="lantern-body">福</div>
+      <div class="lantern-bottom"></div>
+      <div class="lantern-tassel"></div>
+    </div>
+  </div>
+  <div class="lantern-wrap lantern-right">
+    <div class="lantern-string"></div>
+    <div class="lantern">
+      <div class="lantern-top"></div>
+      <div class="lantern-body">囍</div>
+      <div class="lantern-bottom"></div>
+      <div class="lantern-tassel"></div>
+    </div>
+  </div>
+
+  <div class="cover-content">
+    <div class="ornament-top">
+      <span class="orn-line"></span>
+      <span class="orn-symbol">❖</span>
+      <span class="orn-line"></span>
+    </div>
+
+    <div class="double-happiness-hero">囍</div>
+    <p class="chinese-horizontal">喜 · 結 · 良 · 緣</p>
+    <p class="cover-label">The Wedding Celebration Of</p>
+
+    <h1 class="cover-names">
+      <span class="name-gold" id="coverGroom">Sugianto</span>
+      <span class="amp">&</span>
+      <span class="name-gold" id="coverBride">Novi Mutirara</span>
+    </h1>
+
+    <div class="cover-date-wrap">
+      <p class="date-chinese">二〇二六年 · 九月 · 三十日</p>
+      <div class="date-divider">
+        <span></span><span class="diamond">◆</span><span></span>
+      </div>
+      <p class="date-latin">30 September 2026</p>
+    </div>
+
+    <div class="guest-box">
+      <p class="guest-label">致 · Kepada Yth.</p>
+      <p class="guest-name" id="guestName">Tamu Undangan</p>
+    </div>
+
+    <button class="btn-open-luxury" onclick="openInvitation()">
+      <span class="btn-shine"></span>
+      <span class="btn-text-main">開啟請柬</span>
+      <span class="btn-text-sub">Buka Undangan</span>
+    </button>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main id="mainContent" class="hidden">
+
+  <div class="music-player" id="musicPlayer">
+    <div class="music-disc"><div class="music-disc-inner"></div></div>
+    <div class="music-info">
+      <p class="music-title">Wedding Melody</p>
+      <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+    </div>
+    <button class="music-toggle" id="musicBtn" onclick="toggleMusic()">❚❚</button>
+  </div>
+
+  <!-- QUOTE -->
+  <section class="section section-quote">
+    <div class="section-deco">
+      <span class="deco-line"></span><span class="deco-symbol">囍</span><span class="deco-line"></span>
+    </div>
+    <p class="chinese-title-lg">百年好合 · 永結同心</p>
+    <p class="quote-text">
+      Seratus tahun bersatu dalam harmoni,<br>
+      Ribuan tahun bersama dalam kebahagiaan.<br>
+      Semoga cinta kami mengalir seperti sungai panjang,<br>
+      dan berkah melimpah seperti gunung yang kokoh.
+    </p>
+    <p class="quote-source">— 詩經 · Shi Jing</p>
+  </section>
+
+  <!-- COUPLE -->
+  <section class="section section-couple">
+    <div class="section-deco">
+      <span class="deco-line"></span><span class="deco-symbol">新郎 & 新娘</span><span class="deco-line"></span>
+    </div>
+    <h2 class="section-title-luxury">Mempelai</h2>
+    <p class="section-subtitle">The Bride & Groom</p>
+
+    <div class="couple-wrap">
+      <div class="person-card">
+        <div class="photo-frame-luxury">
+          <div class="frame-corner c-tl"></div>
+          <div class="frame-corner c-tr"></div>
+          <div class="frame-corner c-bl"></div>
+          <div class="frame-corner c-br"></div>
+          <img src="assets/groom.jpg" alt="Groom" class="photo" id="groomPhoto">
+        </div>
+        <p class="role-label">新郎 · The Groom</p>
+        <h3 class="person-name" id="groomName">Sugianto</h3>
+        <!-- Untuk groom, tambahkan SEBELUM <h3 class="person-name" id="groomName"> -->
+        <div class="chibi-avatar chibi-groom" id="chibiGroom"></div>
+        <div class="name-divider">◆</div>
+        <p class="person-parents" id="groomParents">
+          Putra Sulung dari<br>
+          <strong>Tn. Ang Kok Thai</strong><br>
+          <span class="amp">&</span><br>
+          <strong>Ny. Khu Sun Tiam</strong>
+        </p>
+      </div>
+
+      <div class="couple-center"><div class="heart-symbol">囍</div></div>
+
+      <div class="person-card">
+        <div class="photo-frame-luxury">
+          <div class="frame-corner c-tl"></div>
+          <div class="frame-corner c-tr"></div>
+          <div class="frame-corner c-bl"></div>
+          <div class="frame-corner c-br"></div>
+          <img src="assets/bride.jpg" alt="Bride" class="photo" id="bridePhoto">
+        </div>
+        <p class="role-label">新娘 · The Bride</p>
+        <h3 class="person-name" id="brideName">Novi Mutirara</h3>
+        <!-- Untuk bride, tambahkan SEBELUM <h3 class="person-name" id="brideName"> -->
+        <div class="chibi-avatar chibi-bride" id="chibiBride"></div>
+        <div class="name-divider">◆</div>
+        <p class="person-parents" id="brideParents">
+          Putri Tunggal dari<br>
+          <strong>Tn. A Pheng</strong><br>
+          <span class="amp">&</span><br>
+          <strong>Ny. Yusnia Mentari</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO PRE-WEDDING -->
+  <section class="section section-video">
+    <div class="section-deco">
+      <span class="deco-line"></span><span class="deco-symbol">愛情故事</span><span class="deco-line"></span>
+    </div>
+    <h2 class="section-title-luxury">Our Love Story</h2>
+    <p class="section-subtitle">Pre-Wedding Video</p>
+
+    <div class="video-frame">
+      <div class="video-ornament tl"></div>
+      <div class="video-ornament tr"></div>
+      <div class="video-ornament bl"></div>
+      <div class="video-ornament br"></div>
+      <div class="video-wrapper" id="videoWrapper">
+        <iframe id="videoIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="section section-countdown">
+    <div class="countdown-card">
+      <div class="countdown-glow"></div>
+      <div class="section-deco light">
+        <span class="deco-line"></span><span class="deco-symbol">良辰吉日</span><span class="deco-line"></span>
+      </div>
+      <h2 class="section-title-luxury light">Menuju Hari Bahagia</h2>
+      <div class="countdown" id="countdown">
+        <div class="cd-item"><div class="cd-value" id="days">00</div><div class="cd-label">HARI</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-item"><div class="cd-value" id="hours">00</div><div class="cd-label">JAM</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-item"><div class="cd-value" id="minutes">00</div><div class="cd-label">MENIT</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-item"><div class="cd-value" id="seconds">00</div><div class="cd-label">DETIK</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="section section-events">
+    <div class="section-deco">
+      <span class="deco-line"></span><span class="deco-symbol">婚禮程序</span><span class="deco-line"></span>
+    </div>
+    <h2 class="section-title-luxury">Rangkaian Acara</h2>
+    <p class="section-subtitle">Wedding Ceremony</p>
+
+    <div class="events-grid" id="eventsGrid">
+      <!-- di-generate JS -->
+    </div>
+
+    <!-- GOOGLE MAPS EMBED -->
+    <div class="map-section">
+      <div class="section-deco">
+        <span class="deco-line"></span><span class="deco-symbol">宴會地點</span><span class="deco-line"></span>
+      </div>
+      <h3 class="map-title">Lokasi Resepsi</h3>
+      <div class="map-frame">
+        <iframe id="mapIframe" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <a href="https://maps.google.com" target="_blank" class="btn-luxury" id="mapLink">
+        <span class="btn-shine"></span>📍 Buka di Google Maps
+      </a>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section section-gallery">
+    <div class="section-deco">
+      <span class="deco-line"></span><span class="deco-symbol">甜蜜回憶</span><span class="deco-line"></span>
+    </div>
+    <h2 class="section-title-luxury">Our Moments</h2>
+    <p class="section-subtitle">Gallery of Love</p>
+    <div class="gallery-luxury" id="galleryGrid"></div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
+    <button class="lightbox-nav prev" onclick="lightboxNav(event, -1)">❮</button>
+    <img src="" alt="" id="lightboxImg">
+    <button class="lightbox-nav next" onclick="lightboxNav(event, 1)">❯</button>
+  </div>
+
+  <!-- GIFT + AMPLOP DIGITAL -->
+  <section class="section section-gift">
+    <div class="section-deco">
+      <span class="deco-line"></span><span class="deco-symbol">紅包祝福</span><span class="deco-line"></span>
+    </div>
+    <h2 class="section-title-luxury">Angpao & Doa</h2>
+    <p class="section-subtitle">Wedding Gift</p>
+
+    <p class="gift-desc">
+      Doa restu Anda adalah berkah terindah bagi kami.<br>
+      Namun jika ingin memberi tanda kasih dalam <span class="gold-em">紅包</span>:
+    </p>
+
+    <div class="gift-grid">
+      <div class="gift-card-luxury">
+        <div class="gift-ribbon">紅包</div>
+        <div class="gift-icon">🏦</div>
+        <p class="gift-bank">BANK BCA</p>
+        <p class="gift-acc">00000000</p>
+        <p class="gift-name">a.n. Sugianto</p>
+        <button class="btn-copy-luxury" onclick="copyText('00000000', this)"><span>Salin Rekening</span></button>
+      </div>
+      <div class="gift-card-luxury">
+        <div class="gift-ribbon">紅包</div>
+        <div class="gift-icon">🏦</div>
+        <p class="gift-bank">BANK MANDIRI</p>
+        <p class="gift-acc">00000000</p>
+        <p class="gift-name">a.n. Novi Mutirara</p>
+        <button class="btn-copy-luxury" onclick="copyText('00000000', this)"><span>Salin Rekening</span></button>
+      </div>
+      <div class="gift-card-luxury wide">
+        <div class="gift-ribbon">禮物</div>
+        <div class="gift-icon">🎁</div>
+        <p class="gift-bank">KIRIM HADIAH</p>
+        <p class="gift-address">Jl. Pulau Bangka Gg. Walet No.3A (Dewa Ruci)<br>Sumatera Utara 20253</p>
+        <button class="btn-copy-luxury" onclick="copyText('Jl. Pulau Bangka Gg. Walet No.3A (Dewa Ruci), Sumatera Utara 20253', this)"><span>Salin Alamat</span></button>
+      </div>
+    </div>
+
+    <!-- TOMBOL AMPLOP DIGITAL -->
+    <button class="btn-envelope" onclick="openEnvelope()">
+      <span class="btn-shine"></span>
+      <span class="envelope-icon">💌</span>
+      <span>Buka Amplop Digital</span>
+    </button>
+  </section>
+
+  <!-- ENVELOPE MODAL -->
+  <div class="envelope-modal" id="envelopeModal">
+    <div class="envelope-backdrop" onclick="closeEnvelope()"></div>
+    <div class="envelope-container">
+      <div class="envelope-ornament tl"></div>
+      <div class="envelope-ornament tr"></div>
+      <div class="envelope-ornament bl"></div>
+      <div class="envelope-ornament br"></div>
+
+      <div class="envelope-stage" id="envelopeStage">
+        <div class="envelope-flap"></div>
+        <div class="envelope-body">
+          <div class="envelope-letter" id="envelopeLetter">
+            <div class="letter-ornament">囍</div>
+            <p class="letter-greeting">Dear Tamu Terkasih,</p>
+            <p class="letter-text">
+              Terima kasih telah menjadi bagian dari perjalanan cinta kami.<br>
+              Kehadiran dan doa Anda adalah hadiah paling berharga.<br><br>
+              <span class="letter-highlight">百年好合 · 永結同心</span>
+            </p>
+            <p class="letter-sign">
+              With love,<br>
+              <span class="letter-names">Sugianto & Novi Mutirara</span>
+            </p>
+            <button class="letter-close" onclick="closeEnvelope()">Tutup ✕</button>
+          </div>
+        </div>
+        <div class="envelope-seal">囍</div>
+      </div>
+
+      <p class="envelope-hint">👆 Klik amplop untuk membuka</p>
+    </div>
+  </div>
+
+  <!-- RSVP -->
+  <section class="section section-rsvp">
+    <div class="section-deco">
+      <span class="deco-line"></span><span class="deco-symbol">出席確認</span><span class="deco-line"></span>
+    </div>
+    <h2 class="section-title-luxury">Konfirmasi Kehadiran</h2>
+    <p class="section-subtitle">RSVP & Ucapan</p>
+
+    <form id="rsvpForm" class="rsvp-form-luxury">
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input type="text" id="rsvpName" placeholder="Tulis nama Anda" required>
+      </div>
+      <div class="form-group">
+        <label>Konfirmasi</label>
+        <div class="attend-options">
+          <label class="attend-option"><input type="radio" name="attend" value="Hadir" required><span class="attend-box">✓ Hadir</span></label>
+          <label class="attend-option"><input type="radio" name="attend" value="Tidak Hadir"><span class="attend-box">✗ Tidak Hadir</span></label>
+          <label class="attend-option"><input type="radio" name="attend" value="Masih Ragu"><span class="attend-box">? Masih Ragu</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ucapan & Doa</label>
+        <textarea id="rsvpMsg" placeholder="Tulis ucapan & doa..." rows="4"></textarea>
+      </div>
+      <button type="submit" class="btn-luxury full"><span class="btn-shine"></span>發送祝福 · Kirim Ucapan</button>
+    </form>
+
+    <div class="wishes-header">
+      <span></span>
+      <span class="wishes-count"><span id="wishesCount">0</span> Ucapan</span>
+      <span></span>
+    </div>
+
+    <div class="wishes-toolbar">
+      <button class="btn-download" onclick="downloadGuestbook()">
+        📄 Download Guest Book (PDF)
+      </button>
+    </div>
+
+    <div id="wishesList" class="wishes-list-luxury"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer-luxury">
+    <div class="footer-happiness">囍</div>
+    <p class="footer-chinese">百年好合 · 永結同心</p>
+    <div class="footer-names">
+      <span class="name-gold">Sugianto</span>
+      <span class="amp">&</span>
+      <span class="name-gold">Novi Mutirara</span>
+    </div>
+    <div class="footer-divider"><span></span><span class="diamond">◆</span><span></span></div>
+    <p class="footer-date">30 · 09 · 2026</p>
+    <p class="footer-thanks">Terima kasih atas doa & restunya 🙏</p>
+    <a href="admin.html" class="admin-link">⚙ Admin</a>
+  </footer>
+
+  <!-- ============ WISH LANTERN ============ -->
+<section class="section section-lantern">
+  <div class="section-deco">
+    <span class="deco-line"></span>
+    <span class="deco-symbol">放天燈 · Wish Lantern</span>
+    <span class="deco-line"></span>
+  </div>
+  <h2 class="section-title-luxury">Lepaskan Harapanmu</h2>
+  <p class="section-subtitle">Kirim Doa ke Langit</p>
+
+  <p class="lantern-desc">
+    Tulis doa & harapan untuk kedua mempelai,<br>
+    lalu lepaskan lentera ke langit malam ✨
+  </p>
+
+  <form id="lanternForm" class="lantern-form">
+    <input type="text" id="lanternName" placeholder="Nama Anda" maxlength="40" required>
+    <textarea id="lanternWish" placeholder="Tulis harapanmu di sini..." maxlength="200" rows="3" required></textarea>
+    <button type="submit" class="btn-luxury">
+      <span class="btn-shine"></span>
+      🏮 Lepaskan Lentera
+    </button>
+  </form>
+
+  <canvas id="lanternCanvas" class="lantern-canvas"></canvas>
+  <div class="lantern-counter">
+    <span id="lanternCount">0</span> lentera telah dilepaskan
+  </div>
+</section>
+
+<!-- ============ PHOTO WALL ============ -->
+<section class="section section-photo-wall">
+  <div class="section-deco">
+    <span class="deco-line"></span>
+    <span class="deco-symbol">合照留念 · Photo Wall</span>
+    <span class="deco-line"></span>
+  </div>
+  <h2 class="section-title-luxury">Dinding Kenangan</h2>
+  <p class="section-subtitle">Share Your Moments</p>
+
+  <p class="photo-wall-desc">
+    Bagikan foto selfie atau ucapanmu untuk kedua mempelai.<br>
+    Foto akan muncul di Live Wall saat acara berlangsung 💕
+  </p>
+
+  <div class="photo-upload-area">
+    <label class="photo-upload-btn">
+      <input type="file" id="photoInput" accept="image/*" capture="user" hidden>
+      <span class="upload-icon">📸</span>
+      <span class="upload-text">Pilih Foto</span>
+    </label>
+    <p class="upload-hint">JPG / PNG · Max 3MB</p>
+  </div>
+
+  <div class="photo-upload-preview" id="photoPreview" style="display:none">
+    <img id="previewImg" src="" alt="Preview">
+    <input type="text" id="photoName" placeholder="Nama Anda" maxlength="40">
+    <input type="text" id="photoCaption" placeholder="Caption singkat (opsional)" maxlength="80">
+    <button class="btn-luxury" onclick="submitPhoto()">
+      <span class="btn-shine"></span>✨ Kirim ke Photo Wall
+    </button>
+  </div>
+
+  <div class="photo-wall-grid" id="photoWallGrid"></div>
+</section>
+
+<!-- ============ LIVE WALL MODAL ============ -->
+<div class="livewall-modal" id="livewallModal">
+  <button class="livewall-close" onclick="closeLiveWall()">✕</button>
+  <div class="livewall-slideshow">
+    <div class="livewall-item" id="livewallContent"></div>
+  </div>
+  <div class="livewall-info">
+    <p class="livewall-title">囍 Live Wall · Sugianto & Novi</p>
+    <p class="livewall-hint">Klik untuk pause / play · ESC untuk keluar</p>
+  </div>
+</div>
+
+<!-- ============ FLOATING ACTION BUTTONS ============ -->
+<div class="fab-group">
+  <button class="fab fab-livewall" onclick="openLiveWall()" title="Live Wall">
+    <span>📺</span>
+    <span class="fab-label">Live Wall</span>
+  </button>
+  <button class="fab fab-signature" onclick="openSignaturePad()" title="Tanda Tangan">
+    <span>✍️</span>
+    <span class="fab-label">Tanda Tangan</span>
+  </button>
+</div>
+
+<!-- ============ SIGNATURE MODAL ============ -->
+<div class="signature-modal" id="signatureModal">
+  <div class="signature-backdrop" onclick="closeSignaturePad()"></div>
+  <div class="signature-card">
+    <button class="signature-close" onclick="closeSignaturePad()">✕</button>
+    <div class="signature-header">
+      <div class="signature-logo">囍</div>
+      <h3>Buku Tamu Digital</h3>
+      <p>Silakan tanda tangan sebagai kenangan</p>
+    </div>
+
+    <input type="text" id="sigName" placeholder="Nama Anda" maxlength="40" required>
+    <input type="text" id="sigMessage" placeholder="Ucapan singkat (opsional)" maxlength="60">
+
+    <div class="signature-canvas-wrap">
+      <canvas id="signatureCanvas"></canvas>
+      <div class="signature-line"></div>
+      <p class="signature-hint">✍️ Tanda tangan di sini</p>
+    </div>
+
+    <div class="signature-actions">
+      <button class="btn-secondary" onclick="clearSignature()">🔄 Ulang</button>
+      <button class="btn-luxury" onclick="saveSignature()">
+        <span class="btn-shine"></span>💾 Simpan
+      </button>
+    </div>
+
+    <div class="signature-wall" id="signatureWall"></div>
+  </div>
+</div>
+</main>
+
+<audio id="bgMusic" loop>
+  <source src="assets/music.mp3" type="audio/mpeg">
+</audio>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+<script src="interactive.js"></script>
+<script src="admin-mod.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚙ Admin Panel · Sugianto & Novi</title>
+  <link rel="stylesheet" href="admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">囍</div>
+    <h1>Admin Panel</h1>
+    <p class="login-sub">Sugianto & Novi Mutirara</p>
+    <div class="login-form">
+      <input type="password" id="loginPassword" placeholder="Masukkan password admin" autocomplete="current-password">
+      <button onclick="handleLogin()">🔓 Masuk</button>
+      <p class="login-error" id="loginError"></p>
+    </div>
+    <a href="index.html" class="back-link">← Kembali ke Undangan</a>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard hidden" id="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">囍</div>
+      <div>
+        <div class="brand-title">Admin</div>
+        <div class="brand-sub">Wedding Panel</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-tab="overview"><span>📊</span> Overview</a>
+      <a href="#" class="nav-item" data-tab="wishes"><span>💌</span> Ucapan & RSVP</a>
+      <a href="#" class="nav-item" data-tab="gallery"><span>🖼️</span> Gallery</a>
+      <a href="#" class="nav-item" data-tab="events"><span>📅</span> Acara</a>
+      <a href="#" class="nav-item" data-tab="couple"><span>💑</span> Mempelai</a>
+      <a href="#" class="nav-item" data-tab="settings"><span>⚙️</span> Pengaturan</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank" class="btn-view">👁 Lihat Undangan</a>
+      <button onclick="handleLogout()" class="btn-logout">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <main class="main-panel">
+
+    <!-- OVERVIEW -->
+    <section class="tab-content active" id="tab-overview">
+      <div class="page-header">
+        <h2>📊 Dashboard Overview</h2>
+        <p class="page-sub">Ringkasan statistik undangan Anda</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card gold">
+          <div class="stat-icon">💌</div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Total Ucapan</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">✓</div>
+          <div class="stat-value" id="statHadir">0</div>
+          <div class="stat-label">Hadir</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon">✗</div>
+          <div class="stat-value" id="statTidak">0</div>
+          <div class="stat-label">Tidak Hadir</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon">?</div>
+          <div class="stat-value" id="statRagu">0</div>
+          <div class="stat-label">Masih Ragu</div>
+        </div>
+      </div>
+
+      <div class="overview-panels">
+        <div class="panel">
+          <h3>📈 Progress Kehadiran</h3>
+          <div class="progress-list" id="progressList"></div>
+        </div>
+        <div class="panel">
+          <h3>🕒 Ucapan Terbaru</h3>
+          <div class="recent-wishes" id="recentWishes"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WISHES -->
+    <section class="tab-content" id="tab-wishes">
+      <div class="page-header">
+        <h2>💌 Ucapan & RSVP</h2>
+        <p class="page-sub">Kelola dan lihat semua ucapan tamu</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="searchWishes" placeholder="🔍 Cari nama atau ucapan..." oninput="filterWishes()">
+        <select id="filterAttend" onchange="filterWishes()">
+          <option value="">Semua Kehadiran</option>
+          <option value="Hadir">Hadir</option>
+          <option value="Tidak Hadir">Tidak Hadir</option>
+          <option value="Masih Ragu">Masih Ragu</option>
+        </select>
+        <button class="btn-primary" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="btn-danger" onclick="confirmClearWishes()">🗑 Hapus Semua</button>
+      </div>
+
+      <div class="wishes-table-wrapper">
+        <table class="wishes-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nama</th>
+              <th>Kehadiran</th>
+              <th>Ucapan</th>
+              <th>Waktu</th>
+            </tr>
+          </thead>
+          <tbody id="wishesTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="tab-content" id="tab-gallery">
+      <div class="page-header">
+        <h2>🖼️ Gallery Manager</h2>
+        <p class="page-sub">Tambah, edit, atau hapus gambar gallery</p>
+      </div>
+
+      <div class="add-gallery-card">
+        <h3>➕ Tambah Gambar Baru</h3>
+        <div class="input-group">
+          <label>URL Gambar (Google Drive / Imgur / URL langsung)</label>
+          <input type="text" id="newImageUrl" placeholder="https://... atau assets/foto.jpg">
+        </div>
+        <div class="input-group">
+          <label>Atau Upload Gambar (ke Google Drive via GAS)</label>
+          <input type="file" id="newImageFile" accept="image/*" onchange="handleFileUpload(event)">
+          <small>Upload memerlukan GAS setup (lihat GAS-SETUP.md)</small>
+        </div>
+        <div class="input-group">
+          <label>Preview</label>
+          <div class="preview-box" id="previewBox">
+            <p class="preview-placeholder">Preview muncul di sini</p>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="addGalleryImage()">➕ Tambahkan ke Gallery</button>
+      </div>
+
+      <h3 class="section-mini-title">📷 Gallery Saat Ini (<span id="galleryCount">0</span> gambar)</h3>
+      <div class="gallery-admin-grid" id="galleryAdminGrid"></div>
+    </section>
+
+    <!-- EVENTS -->
+    <section class="tab-content" id="tab-events">
+      <div class="page-header">
+        <h2>📅 Manage Acara</h2>
+        <p class="page-sub">Edit detail acara pernikahan</p>
+      </div>
+
+      <div id="eventsEditor"></div>
+
+      <div class="form-actions">
+        <button class="btn-primary" onclick="saveEvents()">💾 Simpan Semua Acara</button>
+        <button class="btn-secondary" onclick="loadEventsEditor()">↻ Reset</button>
+        <button class="btn-secondary" onclick="addNewEvent()">➕ Tambah Acara</button>
+      </div>
+    </section>
+
+    <!-- COUPLE -->
+    <section class="tab-content" id="tab-couple">
+      <div class="page-header">
+        <h2>💑 Info Mempelai</h2>
+        <p class="page-sub">Edit nama dan orang tua mempelai</p>
+      </div>
+
+      <div class="couple-editor">
+        <div class="couple-block">
+          <h3>👨 Mempelai Pria</h3>
+          <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="editGroomName">
+          </div>
+          <div class="input-group">
+            <label>Nama Orang Tua (pisah dengan koma)</label>
+            <input type="text" id="editGroomParents" placeholder="Bapak Sugiharto, Ibu Liem Mei Hwa">
+          </div>
+          <div class="input-group">
+            <label>URL Foto</label>
+            <input type="text" id="editGroomPhoto">
+          </div>
+        </div>
+
+        <div class="couple-block">
+          <h3>👩 Mempelai Wanita</h3>
+          <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="editBrideName">
+          </div>
+          <div class="input-group">
+            <label>Nama Orang Tua (pisah dengan koma)</label>
+            <input type="text" id="editBrideParents" placeholder="Bapak Tan Kok Beng, Ibu Ong Siew Lan">
+          </div>
+          <div class="input-group">
+            <label>URL Foto</label>
+            <input type="text" id="editBridePhoto">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" onclick="saveCouple()">💾 Simpan Info Mempelai</button>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="tab-content" id="tab-settings">
+      <div class="page-header">
+        <h2>⚙️ Pengaturan</h2>
+        <p class="page-sub">Konfigurasi umum undangan</p>
+      </div>
+
+      <div class="settings-block">
+        <div class="input-group">
+          <label>Tanggal Pernikahan (ISO format)</label>
+          <input type="datetime-local" id="editWeddingDate">
+        </div>
+        <div class="input-group">
+          <label>Video YouTube ID (contoh: dQw4w9WgXcQ)</label>
+          <input type="text" id="editVideoId">
+        </div>
+        <div class="input-group">
+          <label>Google Maps Embed URL (src dari iframe)</label>
+          <textarea id="editMapEmbed" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" onclick="saveSettings()">💾 Simpan Pengaturan</button>
+        <button class="btn-secondary" onclick="exportConfig()">📤 Export Config JSON</button>
+        <button class="btn-secondary" onclick="document.getElementById('importConfigFile').click()">📥 Import Config</button>
+        <input type="file" id="importConfigFile" accept=".json" hidden onchange="importConfig(event)">
+      </div>
+
+      <div class="info-box">
+        <h3>ℹ️ Info Setup</h3>
+        <p><strong>Backend URL (GAS):</strong> <span id="gasStatus"></span></p>
+        <p>Jika GAS belum di-setup, semua perubahan hanya tersimpan di browser ini (localStorage). Untuk sinkronisasi antar device, setup GAS dari file GAS-SETUP.md.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast-admin" id="toastAdmin"></div>
+
+<script src="config.js"></script>
+<script src="admin.js"></script>
+<script>
+
+  // Fallback: pastikan CONFIG ada
+  window.addEventListener('error', (e) => {
+    console.error('Script error:', e.message, 'pada', e.filename, ':', e.lineno);
+  });
+</script>
+</body>
+</html>
