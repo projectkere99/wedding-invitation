@@ -1,101 +1,46 @@
 /* ================================================
-   INTERACTIVE FEATURES - Paket B
-   ================================================ */
-(function () {
-  'use strict';
+   INTERACTIVE FEATURES — Clean Version (No DPR Bug)
+================================================ */
+'use strict';
 
-  const CFG = window.CONFIG || {};
-  const GAS = CFG.gasUrl || '';
-  const LS_KEY_PHOTOS = 'weddingPhotos_SugiantoNovi';
-  const LS_KEY_SIGN = 'weddingSignatures_SugiantoNovi';
-  const LS_KEY_LANTERN = 'weddingLanterns_SugiantoNovi';
-  const LS_KEY_PENDING = 'weddingPendingPhotos';
+(function() {
+  const LS_LANTERN = 'lanternsSugiantoNovi';
+  const LS_PHOTOS = 'photosSugiantoNovi';
+  const LS_SIGN = 'signaturesSugiantoNovi';
 
-  // ============ CHIBI COUPLE SVG ============
-  function getChibiGroomSVG() {
-    return `
-    <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
-      <!-- Body / Changshan -->
-      <ellipse cx="50" cy="112" rx="26" ry="8" fill="rgba(0,0,0,.1)"/>
-      <path d="M50 65 Q35 65 28 90 L28 110 Q50 118 72 110 L72 90 Q65 65 50 65 Z" fill="#a01c1c"/>
-      <path d="M50 65 Q35 65 28 90 L28 110 Q50 118 72 110 L72 90 Q65 65 50 65 Z" fill="none" stroke="#d4af37" stroke-width="1.5"/>
-      <!-- Collar -->
-      <path d="M42 65 L50 78 L58 65" fill="none" stroke="#d4af37" stroke-width="2"/>
-      <!-- Arms -->
-      <ellipse cx="28" cy="88" rx="7" ry="12" fill="#a01c1c" stroke="#d4af37" stroke-width="1"/>
-      <ellipse cx="72" cy="88" rx="7" ry="12" fill="#a01c1c" stroke="#d4af37" stroke-width="1"/>
-      <!-- Head -->
-      <circle cx="50" cy="45" r="22" fill="#f5d7b8"/>
-      <!-- Hair -->
-      <path d="M28 45 Q28 22 50 22 Q72 22 72 45 Q70 32 50 30 Q30 32 28 45 Z" fill="#1a0f0a"/>
-      <!-- Eyes -->
-      <ellipse cx="42" cy="46" rx="2.5" ry="3" fill="#1a0f0a"/>
-      <ellipse cx="58" cy="46" rx="2.5" ry="3" fill="#1a0f0a"/>
-      <circle cx="42.7" cy="45" r="1" fill="#fff"/>
-      <circle cx="58.7" cy="45" r="1" fill="#fff"/>
-      <!-- Blush -->
-      <ellipse cx="38" cy="52" rx="3" ry="1.5" fill="#ffb3b3" opacity=".6"/>
-      <ellipse cx="62" cy="52" rx="3" ry="1.5" fill="#ffb3b3" opacity=".6"/>
-      <!-- Smile -->
-      <path d="M46 54 Q50 57 54 54" fill="none" stroke="#8b4513" stroke-width="1.5" stroke-linecap="round"/>
-      <!-- Gold crown -->
-      <path d="M40 26 L44 20 L48 26 L52 20 L56 26 L60 20 L60 26 Z" fill="#d4af37" stroke="#8b6914" stroke-width="1"/>
-      <circle cx="50" cy="22" r="2" fill="#ffd700"/>
-    </svg>`;
+  /* ============ UTILS ============ */
+  function $(id) { return document.getElementById(id); }
+
+  function escapeHTML(str) {
+    return String(str || '').replace(/[&<>"']/g, function(m) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m];
+    });
   }
 
-  function getChibiBrideSVG() {
-    return `
-    <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
-      <!-- Shadow -->
-      <ellipse cx="50" cy="112" rx="26" ry="8" fill="rgba(0,0,0,.1)"/>
-      <!-- Qipao body -->
-      <path d="M50 65 Q38 65 32 90 L32 110 Q50 118 68 110 L68 90 Q62 65 50 65 Z" fill="#c41e3a"/>
-      <path d="M50 65 Q38 65 32 90 L32 110 Q50 118 68 110 L68 90 Q62 65 50 65 Z" fill="none" stroke="#d4af37" stroke-width="1.5"/>
-      <!-- Decorative pattern -->
-      <circle cx="50" cy="90" r="4" fill="none" stroke="#d4af37" stroke-width="1"/>
-      <path d="M46 86 Q50 90 54 86" fill="none" stroke="#d4af37" stroke-width=".8"/>
-      <!-- Collar -->
-      <path d="M42 65 Q50 72 58 65" fill="#c41e3a" stroke="#d4af37" stroke-width="1.5"/>
-      <!-- Arms -->
-      <ellipse cx="32" cy="88" rx="6" ry="11" fill="#c41e3a" stroke="#d4af37" stroke-width="1"/>
-      <ellipse cx="68" cy="88" rx="6" ry="11" fill="#c41e3a" stroke="#d4af37" stroke-width="1"/>
-      <!-- Head -->
-      <circle cx="50" cy="45" r="22" fill="#f5d7b8"/>
-      <!-- Hair -->
-      <path d="M28 45 Q26 20 50 20 Q74 20 72 45 Q74 55 78 60 L74 60 Q72 50 70 48 Q70 34 50 32 Q30 34 30 48 Q28 50 26 60 L22 60 Q26 55 28 45 Z" fill="#1a0f0a"/>
-      <!-- Hair buns -->
-      <circle cx="32" cy="30" r="7" fill="#1a0f0a"/>
-      <circle cx="68" cy="30" r="7" fill="#1a0f0a"/>
-      <circle cx="32" cy="30" r="2.5" fill="#d4af37"/>
-      <circle cx="68" cy="30" r="2.5" fill="#d4af37"/>
-      <!-- Hair ornament -->
-      <path d="M46 24 L50 18 L54 24 L50 22 Z" fill="#d4af37"/>
-      <!-- Eyes -->
-      <path d="M38 46 Q42 43 46 46" fill="none" stroke="#1a0f0a" stroke-width="1.5" stroke-linecap="round"/>
-      <path d="M54 46 Q58 43 62 46" fill="none" stroke="#1a0f0a" stroke-width="1.5" stroke-linecap="round"/>
-      <circle cx="42" cy="47" r="1.8" fill="#1a0f0a"/>
-      <circle cx="58" cy="47" r="1.8" fill="#1a0f0a"/>
-      <circle cx="42.5" cy="46.5" r=".8" fill="#fff"/>
-      <circle cx="58.5" cy="46.5" r=".8" fill="#fff"/>
-      <!-- Blush -->
-      <ellipse cx="36" cy="52" rx="3.5" ry="1.8" fill="#ffb3b3" opacity=".7"/>
-      <ellipse cx="64" cy="52" rx="3.5" ry="1.8" fill="#ffb3b3" opacity=".7"/>
-      <!-- Smile -->
-      <path d="M46 55 Q50 58 54 55" fill="none" stroke="#8b4513" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>`;
+  function showToast(msg) {
+    if (typeof window.showToast === 'function') {
+      window.showToast(msg);
+      return;
+    }
+    const old = document.querySelector('.toast');
+    if (old) old.remove();
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(function() { t.classList.add('show'); });
+    setTimeout(function() {
+      t.classList.remove('show');
+      setTimeout(function() { t.remove(); }, 500);
+    }, 2500);
   }
 
-  function initChibi() {
-    const g = document.getElementById('chibiGroom');
-    const b = document.getElementById('chibiBride');
-    if (g) g.innerHTML = getChibiGroomSVG();
-    if (b) b.innerHTML = getChibiBrideSVG();
-  }
-
-  // ============ WISH LANTERN ============
-  const lanternCanvas = document.getElementById('lanternCanvas');
-  let lanternCtx, lanterns = [], lanternAnimId;
+  /* ================================================
+     WISH LANTERN
+  ================================================ */
+  const lanternCanvas = $('lanternCanvas');
+  let lanternCtx = null;
+  let lanterns = [];
 
   function initLantern() {
     if (!lanternCanvas) return;
@@ -104,215 +49,177 @@
     resizeLantern();
     window.addEventListener('resize', resizeLantern);
 
-    loadLanterns().then(() => {
-      // Spawn existing lanterns (background)
-      lanterns.forEach(w => spawnLantern(w.name, w.wish, true));
-      updateLanternCounter();
-    });
+    const saved = loadLanterns();
+    saved.forEach(function(w) { spawnLantern(w.name, w.wish, true); });
+    updateLanternCounter();
 
-    lanternAnimId = requestAnimationFrame(animateLanterns);
-
-    const form = document.getElementById('lanternForm');
+    const form = $('lanternForm');
     if (form) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', function(e) {
         e.preventDefault();
-        const name = document.getElementById('lanternName').value.trim();
-        const wish = document.getElementById('lanternWish').value.trim();
+        const name = $('lanternName').value.trim();
+        const wish = $('lanternWish').value.trim();
         if (!name || !wish) return;
 
         spawnLantern(name, wish, false);
-        saveLantern({ name, wish, time: new Date().toLocaleString('id-ID') });
+        saveLantern({ name: name, wish: wish, time: new Date().toLocaleString('id-ID') });
         form.reset();
         updateLanternCounter();
         showToast('🏮 Lentera berhasil dilepaskan!');
       });
     }
+
+    requestAnimationFrame(animateLanterns);
   }
 
-    function resizeLantern() {
+  function resizeLantern() {
     if (!lanternCanvas) return;
-    const rect = lanternCanvas.parentElement.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    
-    lanternCanvas.width = rect.width * dpr;
-    lanternCanvas.height = rect.height * dpr;
-    lanternCanvas.style.width = rect.width + 'px';
-    lanternCanvas.style.height = rect.height + 'px';
-    
-    if (lanternCtx) {
-        lanternCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    }
+    const parent = lanternCanvas.parentElement;
+    const rect = parent.getBoundingClientRect();
+    lanternCanvas.width = rect.width;
+    lanternCanvas.height = rect.height;
+  }
 
-  class Lantern {
-    constructor(name, wish, isBackground) {
-      this.name = name;
-      this.wish = wish;
-      this.x = lanternCanvas.width * (0.2 + Math.random() * 0.6);
-      this.y = isBackground
-        ? Math.random() * lanternCanvas.height
-        : lanternCanvas.height - 20;
-      this.vy = -0.4 - Math.random() * 0.6;
-      this.vx = (Math.random() - 0.5) * 0.3;
-      this.size = 22 + Math.random() * 10;
-      this.opacity = isBackground ? 0.35 : 1;
-      this.targetOpacity = isBackground ? 0.35 : 1;
-      this.rotation = 0;
-      this.rotSpeed = (Math.random() - 0.5) * 0.02;
-      this.sway = Math.random() * Math.PI * 2;
-      this.life = isBackground ? Infinity : 1;
-      this.showLabel = !isBackground;
-      this.age = 0;
-    }
+  function Lantern(name, wish, isBackground) {
+    this.name = name;
+    this.wish = wish;
+    this.x = lanternCanvas.width * (0.2 + Math.random() * 0.6);
+    this.y = isBackground
+      ? Math.random() * lanternCanvas.height
+      : lanternCanvas.height - 20;
+    this.vy = -0.4 - Math.random() * 0.6;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.size = 22 + Math.random() * 10;
+    this.opacity = isBackground ? 0.35 : 1;
+    this.rotation = 0;
+    this.rotSpeed = (Math.random() - 0.5) * 0.02;
+    this.sway = Math.random() * Math.PI * 2;
+    this.life = isBackground ? Infinity : 1;
+    this.showLabel = !isBackground;
+    this.age = 0;
+  }
 
-    update() {
-      this.y += this.vy;
-      this.x += this.vx + Math.sin(this.sway) * 0.5;
-      this.sway += 0.03;
-      this.rotation += this.rotSpeed;
-      this.age++;
+  Lantern.prototype.update = function() {
+    this.y += this.vy;
+    this.sway += 0.03;
+    this.x += this.vx + Math.sin(this.sway) * 0.5;
+    this.rotation += this.rotSpeed;
+    this.age++;
 
-      if (this.age > 100) this.opacity += (this.targetOpacity - this.opacity) * 0.02;
-
-      // Fade out kalau di luar canvas
-      if (this.y < -this.size * 3) {
-        if (this.life === Infinity) {
-          // Reset background lantern ke bawah
-          this.y = lanternCanvas.height + 30;
-          this.x = lanternCanvas.width * (0.2 + Math.random() * 0.6);
-        } else {
-          return false;
-        }
+    if (this.y < -this.size * 3) {
+      if (this.life === Infinity) {
+        this.y = lanternCanvas.height + 30;
+        this.x = lanternCanvas.width * (0.2 + Math.random() * 0.6);
+      } else {
+        return false;
       }
-      return true;
     }
+    return true;
+  };
 
-    draw() {
-      lanternCtx.save();
-      lanternCtx.translate(this.x, this.y);
-      lanternCtx.rotate(this.rotation);
-      lanternCtx.globalAlpha = this.opacity;
+  Lantern.prototype.draw = function() {
+    lanternCtx.save();
+    lanternCtx.translate(this.x, this.y);
+    lanternCtx.rotate(this.rotation);
+    lanternCtx.globalAlpha = this.opacity;
 
-      // Glow
-      const gradient = lanternCtx.createRadialGradient(0, 0, 0, 0, 0, this.size * 2.5);
-      gradient.addColorStop(0, 'rgba(255,150,50,.5)');
-      gradient.addColorStop(1, 'rgba(255,150,50,0)');
-      lanternCtx.fillStyle = gradient;
-      lanternCtx.beginPath();
-      lanternCtx.arc(0, 0, this.size * 2.5, 0, Math.PI * 2);
-      lanternCtx.fill();
+    const gradient = lanternCtx.createRadialGradient(0, 0, 0, 0, 0, this.size * 2.5);
+    gradient.addColorStop(0, 'rgba(255,150,50,.5)');
+    gradient.addColorStop(1, 'rgba(255,150,50,0)');
+    lanternCtx.fillStyle = gradient;
+    lanternCtx.beginPath();
+    lanternCtx.arc(0, 0, this.size * 2.5, 0, Math.PI * 2);
+    lanternCtx.fill();
 
-      // Lantern body
-      lanternCtx.fillStyle = 'rgba(220,50,50,.9)';
-      lanternCtx.beginPath();
-      lanternCtx.ellipse(0, 0, this.size * 0.7, this.size, 0, 0, Math.PI * 2);
-      lanternCtx.fill();
+    lanternCtx.fillStyle = 'rgba(220,50,50,.9)';
+    lanternCtx.beginPath();
+    lanternCtx.ellipse(0, 0, this.size * 0.7, this.size, 0, 0, Math.PI * 2);
+    lanternCtx.fill();
 
-      // Gold outline
-      lanternCtx.strokeStyle = 'rgba(212,175,55,1)';
-      lanternCtx.lineWidth = 1.5;
-      lanternCtx.stroke();
+    lanternCtx.strokeStyle = 'rgba(212,175,55,1)';
+    lanternCtx.lineWidth = 1.5;
+    lanternCtx.stroke();
 
-      // Top & bottom caps
-      lanternCtx.fillStyle = '#d4af37';
-      lanternCtx.fillRect(-this.size * 0.35, -this.size - 3, this.size * 0.7, 4);
-      lanternCtx.fillRect(-this.size * 0.35, this.size - 1, this.size * 0.7, 4);
+    lanternCtx.fillStyle = '#d4af37';
+    lanternCtx.fillRect(-this.size * 0.35, -this.size - 3, this.size * 0.7, 4);
+    lanternCtx.fillRect(-this.size * 0.35, this.size - 1, this.size * 0.7, 4);
 
-      // 囍 character
-      lanternCtx.save();
+    lanternCtx.save();
+    lanternCtx.rotate(-this.rotation);
+    lanternCtx.fillStyle = '#ffd700';
+    lanternCtx.font = 'bold ' + (this.size * 0.9) + 'px serif';
+    lanternCtx.textAlign = 'center';
+    lanternCtx.textBaseline = 'middle';
+    lanternCtx.fillText('囍', 0, 0);
+    lanternCtx.restore();
+
+    if (this.showLabel && this.opacity > 0.5) {
       lanternCtx.rotate(-this.rotation);
-      lanternCtx.fillStyle = '#ffd700';
-      lanternCtx.font = `bold ${this.size * 0.9}px 'Ma Shan Zheng', serif`;
+      lanternCtx.globalAlpha = this.opacity * 0.9;
+      lanternCtx.fillStyle = '#fff';
+      lanternCtx.font = 'bold 11px Poppins, sans-serif';
       lanternCtx.textAlign = 'center';
-      lanternCtx.textBaseline = 'middle';
-      lanternCtx.fillText('囍', 0, 0);
-      lanternCtx.restore();
-
-      // Wish text (only for user lanterns)
-      if (this.showLabel && this.opacity > 0.5) {
-        lanternCtx.rotate(-this.rotation);
-        lanternCtx.globalAlpha = this.opacity * 0.9;
-        lanternCtx.fillStyle = '#fff';
-        lanternCtx.font = 'bold 11px Poppins, sans-serif';
-        lanternCtx.textAlign = 'center';
-        const wishText = this.wish.length > 20 ? this.wish.slice(0, 20) + '…' : this.wish;
-        lanternCtx.fillText(wishText, 0, this.size + 14);
-        lanternCtx.font = '10px Poppins, sans-serif';
-        lanternCtx.fillStyle = '#ffd700';
-        lanternCtx.fillText(`— ${this.name}`, 0, this.size + 26);
-      }
-
-      lanternCtx.restore();
+      const t = this.wish.length > 20 ? this.wish.slice(0, 20) + '…' : this.wish;
+      lanternCtx.fillText(t, 0, this.size + 14);
+      lanternCtx.font = '10px Poppins, sans-serif';
+      lanternCtx.fillStyle = '#ffd700';
+      lanternCtx.fillText('— ' + this.name, 0, this.size + 26);
     }
-  }
 
-  function spawnLantern(name, wish, isBackground) {
+    lanternCtx.restore();
+  };
+
+  function spawnLantern(name, wish, isBg) {
     if (!lanternCanvas) return;
-    lanterns.push(new Lantern(name, wish, isBackground));
+    lanterns.push(new Lantern(name, wish, isBg));
   }
 
   function animateLanterns() {
-    if (!lanternCtx || !lanternCanvas) return;
+    if (!lanternCtx) return;
 
-    // Fade trail
-    lanternCtx.fillStyle = 'rgba(20,0,0,0.15)';
+    lanternCtx.fillStyle = 'rgba(251,245,230,0.2)';
     lanternCtx.fillRect(0, 0, lanternCanvas.width, lanternCanvas.height);
 
-    lanterns = lanterns.filter(l => {
+    lanterns = lanterns.filter(function(l) {
       const alive = l.update();
       if (alive) l.draw();
       return alive;
     });
 
-    lanternAnimId = requestAnimationFrame(animateLanterns);
+    requestAnimationFrame(animateLanterns);
   }
 
-  // Load & save lanterns
-  async function loadLanterns() {
-    if (GAS) {
-      try {
-        const res = await fetch(GAS + '?action=lanterns');
-        const data = await res.json();
-        return data.lanterns || [];
-      } catch (e) { console.warn('GAS lantern gagal'); }
-    }
+  function loadLanterns() {
     try {
-      return JSON.parse(localStorage.getItem(LS_KEY_LANTERN) || '[]');
+      return JSON.parse(localStorage.getItem(LS_LANTERN) || '[]');
     } catch (e) { return []; }
   }
 
   function saveLantern(data) {
-    // Save to localStorage
-    const arr = JSON.parse(localStorage.getItem(LS_KEY_LANTERN) || '[]');
+    const arr = loadLanterns();
     arr.push(data);
-    localStorage.setItem(LS_KEY_LANTERN, JSON.stringify(arr));
-
-    // Save to GAS
-    if (GAS) {
-      fetch(GAS, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'addLantern', ...data })
-      }).catch(e => console.warn(e));
-    }
+    try {
+      localStorage.setItem(LS_LANTERN, JSON.stringify(arr));
+    } catch (e) {}
   }
 
-  async function updateLanternCounter() {
-    const el = document.getElementById('lanternCount');
+  function updateLanternCounter() {
+    const el = $('lanternCount');
     if (!el) return;
-    const arr = JSON.parse(localStorage.getItem(LS_KEY_LANTERN) || '[]');
+    const arr = loadLanterns();
     el.textContent = arr.length;
   }
 
-  // ============ PHOTO WALL ============
+  /* ================================================
+     PHOTO WALL
+  ================================================ */
   let pendingPhotoData = null;
 
   function initPhotoWall() {
-    const input = document.getElementById('photoInput');
+    const input = $('photoInput');
     if (!input) return;
 
-    input.addEventListener('change', (e) => {
+    input.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
       if (file.size > 3 * 1024 * 1024) {
@@ -321,10 +228,13 @@
       }
 
       const reader = new FileReader();
-      reader.onload = (ev) => {
+      reader.onload = function(ev) {
         pendingPhotoData = ev.target.result;
-        document.getElementById('previewImg').src = pendingPhotoData;
-        document.getElementById('photoPreview').style.display = 'flex';
+        const img = $('previewImg');
+        const prev = $('photoPreview');
+        if (img) img.src = pendingPhotoData;
+        if (prev) prev.classList.remove('hidden');
+        prev.style.display = 'flex';
       };
       reader.readAsDataURL(file);
     });
@@ -332,25 +242,16 @@
     loadPhotoWall();
   }
 
-  async function loadPhotoWall() {
+  function loadPhotoWall() {
     let photos = [];
-    if (GAS) {
-      try {
-        const res = await fetch(GAS + '?action=photos');
-        const data = await res.json();
-        photos = data.photos || [];
-      } catch (e) { console.warn('GAS photos gagal'); }
-    }
-    if (photos.length === 0) {
-      try {
-        photos = JSON.parse(localStorage.getItem(LS_KEY_PHOTOS) || '[]');
-      } catch (e) { photos = []; }
-    }
+    try {
+      photos = JSON.parse(localStorage.getItem(LS_PHOTOS) || '[]');
+    } catch (e) { photos = []; }
     renderPhotoWall(photos);
   }
 
   function renderPhotoWall(photos) {
-    const grid = document.getElementById('photoWallGrid');
+    const grid = $('photoWallGrid');
     if (!grid) return;
 
     if (photos.length === 0) {
@@ -358,82 +259,59 @@
       return;
     }
 
-    grid.innerHTML = photos.slice(-12).reverse().map(p => `
-      <div class="photo-wall-item" onclick="openPhotoLightbox('${(p.url || p.data || '').replace(/'/g, "\\'")}')">
-        <img src="${p.url || p.data}" alt="${escapeHtml(p.name)}">
-        <div class="photo-wall-caption">
-          <strong>${escapeHtml(p.name)}</strong>
-          ${p.caption ? escapeHtml(p.caption) : ''}
-        </div>
-      </div>
-    `).join('');
+    grid.innerHTML = photos.slice(-12).reverse().map(function(p) {
+      return '<div class="photo-wall-item" onclick="openPhotoLightbox(\'' + (p.data || '').replace(/'/g, "\\'") + '\')">' +
+        '<img src="' + p.data + '" alt="' + escapeHTML(p.name) + '">' +
+        '<div class="photo-wall-caption"><strong>' + escapeHTML(p.name) + '</strong>' +
+        (p.caption ? escapeHTML(p.caption) : '') + '</div>' +
+        '</div>';
+    }).join('');
   }
 
-  async function submitPhoto() {
-    const name = document.getElementById('photoName').value.trim();
-    const caption = document.getElementById('photoCaption').value.trim();
+  function submitPhoto() {
+    const nameEl = $('photoName');
+    const capEl = $('photoCaption');
+    const name = nameEl ? nameEl.value.trim() : '';
+    const caption = capEl ? capEl.value.trim() : '';
 
     if (!name) { showToast('⚠️ Isi nama Anda'); return; }
     if (!pendingPhotoData) { showToast('⚠️ Pilih foto dulu'); return; }
 
-    let url = pendingPhotoData;
-
-    // Upload ke Drive via GAS
-    if (GAS) {
-      showToast('⏳ Mengupload foto...');
-      try {
-        const res = await fetch(GAS, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'uploadPhoto',
-            data: pendingPhotoData,
-            name: `photo-${Date.now()}.jpg`
-          })
-        });
-        const data = await res.json();
-        if (data.url) url = data.url;
-      } catch (e) {
-        console.warn('Gagal upload ke Drive, simpan lokal');
-      }
-    }
-
     const photoData = {
-      name,
-      caption,
-      url,
-      data: GAS ? '' : pendingPhotoData, // hanya simpan base64 kalau tidak ada GAS
-      time: new Date().toLocaleString('id-ID'),
-      approved: !GAS // auto-approve kalau tidak pakai GAS
+      name: name,
+      caption: caption,
+      data: pendingPhotoData,
+      time: new Date().toLocaleString('id-ID')
     };
 
-    // Save
-    const arr = JSON.parse(localStorage.getItem(LS_KEY_PHOTOS) || '[]');
+    const arr = [];
+    try {
+      const existing = JSON.parse(localStorage.getItem(LS_PHOTOS) || '[]');
+      existing.forEach(function(p) { arr.push(p); });
+    } catch (e) {}
     arr.push(photoData);
-    localStorage.setItem(LS_KEY_PHOTOS, JSON.stringify(arr));
 
-    if (GAS) {
-      fetch(GAS, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'addPhoto', ...photoData })
-      }).catch(e => console.warn(e));
+    try {
+      localStorage.setItem(LS_PHOTOS, JSON.stringify(arr));
+    } catch (e) {
+      showToast('⚠️ Foto terlalu besar untuk disimpan');
+      return;
     }
 
-    // Reset
     pendingPhotoData = null;
-    document.getElementById('photoPreview').style.display = 'none';
-    document.getElementById('photoName').value = '';
-    document.getElementById('photoCaption').value = '';
-    document.getElementById('photoInput').value = '';
+    const prev = $('photoPreview');
+    if (prev) { prev.classList.add('hidden'); prev.style.display = ''; }
+    if (nameEl) nameEl.value = '';
+    if (capEl) capEl.value = '';
+    const input = $('photoInput');
+    if (input) input.value = '';
 
-    // Confetti!
-    if (window.launchConfetti) {
+    if (typeof window.launchConfetti === 'function') {
       window.launchConfetti();
-      if (window.animateConfetti) window.animateConfetti();
+      if (typeof window.animateConfetti === 'function') window.animateConfetti();
     }
 
-    showToast('📸 Terima kasih! Foto akan segera tampil.');
+    showToast('📸 Terima kasih! Foto Anda tersimpan.');
     loadPhotoWall();
   }
 
@@ -441,26 +319,34 @@
     if (!url) return;
     const lb = document.createElement('div');
     lb.className = 'lightbox active';
-    lb.innerHTML = `<img src="${url}" style="max-width:90vw;max-height:85vh;border:4px solid #d4af37;border-radius:12px">`;
-    lb.onclick = () => lb.remove();
+    lb.style.cssText = 'position:fixed;inset:0;background:rgba(20,0,0,.96);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;cursor:pointer';
+    lb.innerHTML = '<img src="' + url + '" style="max-width:90vw;max-height:85vh;border:4px solid #d4af37;border-radius:12px">';
+    lb.onclick = function() { lb.remove(); };
     document.body.appendChild(lb);
   }
 
-  // ============ SIGNATURE PAD ============
-  let sigCanvas, sigCtx, sigDrawing = false, sigPoints = [];
+  /* ================================================
+     SIGNATURE PAD
+  ================================================ */
+  let sigCanvas = null;
+  let sigCtx = null;
+  let sigDrawing = false;
+  let sigPoints = [];
 
   function initSignaturePad() {
-    sigCanvas = document.getElementById('signatureCanvas');
+    sigCanvas = $('signatureCanvas');
     if (!sigCanvas) return;
 
     sigCtx = sigCanvas.getContext('2d');
-    resizeSignatureCanvas();
-    window.addEventListener('resize', () => {
-      resizeSignatureCanvas();
-      redrawSignature();
+
+    // Resize saat pertama buka modal (bukan saat load)
+    window.addEventListener('resize', function() {
+      if ($('signatureModal').classList.contains('active')) {
+        resizeSignatureCanvas();
+        redrawSignature();
+      }
     });
 
-    // Pointer events (mouse + touch + stylus)
     sigCanvas.addEventListener('pointerdown', startDraw);
     sigCanvas.addEventListener('pointermove', draw);
     sigCanvas.addEventListener('pointerup', endDraw);
@@ -470,33 +356,29 @@
     loadSignatureWall();
   }
 
-    function resizeSignatureCanvas() {
-        const rect = sigCanvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        
-        // Simpan gambar yang sudah ada sebelum resize
-        const imageData = sigPoints.length > 0 ? sigCanvas.toDataURL() : null;
-        
-        sigCanvas.width = rect.width * dpr;
-        sigCanvas.height = rect.height * dpr;
-        sigCanvas.style.width = rect.width + 'px';
-        sigCanvas.style.height = rect.height + 'px';
-        
-        sigCtx.scale(dpr, dpr);
-        sigCtx.lineCap = 'round';
-        sigCtx.lineJoin = 'round';
-        sigCtx.strokeStyle = '#1a0f0a';
-        sigCtx.lineWidth = 2.5;
-        
-        // Restore gambar setelah resize
-        if (imageData) {
-            const img = new Image();
-            img.onload = () => {
-            sigCtx.drawImage(img, 0, 0, rect.width, rect.height);
-            };
-            img.src = imageData;
-        }
+  function resizeSignatureCanvas() {
+    if (!sigCanvas) return;
+    const rect = sigCanvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
+    // Simpan gambar lama
+    const oldData = sigPoints.length > 0 ? sigCanvas.toDataURL() : null;
+
+    sigCanvas.width = rect.width;
+    sigCanvas.height = rect.height;
+    sigCtx.lineCap = 'round';
+    sigCtx.lineJoin = 'round';
+    sigCtx.strokeStyle = '#1a0f0a';
+    sigCtx.lineWidth = 2.5;
+
+    if (oldData) {
+      const img = new Image();
+      img.onload = function() {
+        sigCtx.drawImage(img, 0, 0, rect.width, rect.height);
+      };
+      img.src = oldData;
     }
+  }
 
   function startDraw(e) {
     sigDrawing = true;
@@ -504,7 +386,7 @@
     const rect = sigCanvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    sigPoints.push({ x, y });
+    sigPoints.push({ x: x, y: y });
     sigCtx.beginPath();
     sigCtx.moveTo(x, y);
   }
@@ -514,21 +396,19 @@
     const rect = sigCanvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    sigPoints.push({ x, y });
+    sigPoints.push({ x: x, y: y });
     sigCtx.lineTo(x, y);
     sigCtx.stroke();
   }
 
-  function endDraw() {
-    sigDrawing = false;
-  }
+  function endDraw() { sigDrawing = false; }
 
   function redrawSignature() {
-    if (sigPoints.length === 0) return;
+    if (!sigCanvas || sigPoints.length === 0) return;
     const rect = sigCanvas.getBoundingClientRect();
     sigCtx.clearRect(0, 0, rect.width, rect.height);
     sigCtx.beginPath();
-    sigPoints.forEach((p, i) => {
+    sigPoints.forEach(function(p, i) {
       if (i === 0) sigCtx.moveTo(p.x, p.y);
       else sigCtx.lineTo(p.x, p.y);
     });
@@ -536,157 +416,131 @@
   }
 
   function clearSignature() {
+    if (!sigCanvas) return;
     const rect = sigCanvas.getBoundingClientRect();
     sigCtx.clearRect(0, 0, rect.width, rect.height);
     sigPoints = [];
   }
 
   function openSignaturePad() {
-    document.getElementById('signatureModal').classList.add('active');
+    const modal = $('signatureModal');
+    if (!modal) return;
+    modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    setTimeout(() => resizeSignatureCanvas(), 100);
+    // Resize setelah modal visible
+    setTimeout(resizeSignatureCanvas, 100);
   }
 
   function closeSignaturePad() {
-    document.getElementById('signatureModal').classList.remove('active');
+    const modal = $('signatureModal');
+    if (!modal) return;
+    modal.classList.remove('active');
     document.body.style.overflow = 'auto';
     clearSignature();
   }
 
-  async function saveSignature() {
-    const name = document.getElementById('sigName').value.trim();
-    const message = document.getElementById('sigMessage').value.trim();
+  function saveSignature() {
+    const name = $('sigName').value.trim();
+    const message = $('sigMessage').value.trim();
 
     if (!name) { showToast('⚠️ Isi nama Anda'); return; }
     if (sigPoints.length < 5) { showToast('⚠️ Tanda tangan dulu'); return; }
 
-    // Trim canvas (remove whitespace)
-    const trimmed = trimCanvas(sigCanvas);
-    const dataUrl = trimmed.toDataURL('image/png');
+    const dataUrl = sigCanvas.toDataURL('image/png');
 
     const sigData = {
-      name,
-      message,
+      name: name,
+      message: message,
       signature: dataUrl,
       time: new Date().toLocaleString('id-ID')
     };
 
-    // Save
-    const arr = JSON.parse(localStorage.getItem(LS_KEY_SIGN) || '[]');
+    const arr = [];
+    try {
+      const existing = JSON.parse(localStorage.getItem(LS_SIGN) || '[]');
+      existing.forEach(function(s) { arr.push(s); });
+    } catch (e) {}
     arr.push(sigData);
-    localStorage.setItem(LS_KEY_SIGN, JSON.stringify(arr));
 
-    if (GAS) {
-      fetch(GAS, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'addSignature', ...sigData })
-      }).catch(e => console.warn(e));
+    try {
+      localStorage.setItem(LS_SIGN, JSON.stringify(arr));
+    } catch (e) {
+      showToast('⚠️ Penyimpanan penuh');
+      return;
     }
 
     showToast('✍️ Tanda tangan tersimpan!');
-    document.getElementById('sigName').value = '';
-    document.getElementById('sigMessage').value = '';
+    $('sigName').value = '';
+    $('sigMessage').value = '';
     clearSignature();
     loadSignatureWall();
   }
 
-  // Trim whitespace dari canvas
-  function trimCanvas(canvas) {
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width, h = canvas.height;
-    const pixels = ctx.getImageData(0, 0, w, h);
-    const data = pixels.data;
-
-    let top = null, left = null, right = null, bottom = null;
-
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const idx = (y * w + x) * 4;
-        if (data[idx + 3] > 10) {
-          if (top === null) top = y;
-          if (left === null || x < left) left = x;
-          if (right === null || x > right) right = x;
-          bottom = y;
-        }
-      }
-    }
-
-    if (top === null) return canvas;
-
-    const padding = 10;
-    top = Math.max(0, top - padding);
-    left = Math.max(0, left - padding);
-    right = Math.min(w - 1, right + padding);
-    bottom = Math.min(h - 1, bottom + padding);
-
-    const nw = right - left + 1;
-    const nh = bottom - top + 1;
-
-    const out = document.createElement('canvas');
-    out.width = nw;
-    out.height = nh;
-    out.getContext('2d').drawImage(canvas, left, top, nw, nh, 0, 0, nw, nh);
-    return out;
-  }
-
   function loadSignatureWall() {
-    const wall = document.getElementById('signatureWall');
+    const wall = $('signatureWall');
     if (!wall) return;
 
-    const arr = JSON.parse(localStorage.getItem(LS_KEY_SIGN) || '[]');
+    let arr = [];
+    try {
+      arr = JSON.parse(localStorage.getItem(LS_SIGN) || '[]');
+    } catch (e) {}
+
     if (arr.length === 0) {
       wall.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;font-size:.8rem">Belum ada tanda tangan</p>';
       return;
     }
 
-    wall.innerHTML = arr.slice(-8).reverse().map(s => `
-      <div class="signature-wall-item">
-        <img src="${s.signature}" alt="${escapeHtml(s.name)}">
-        <strong>${escapeHtml(s.name)}</strong>
-      </div>
-    `).join('');
+    wall.innerHTML = arr.slice(-8).reverse().map(function(s) {
+      return '<div class="signature-wall-item">' +
+        '<img src="' + s.signature + '" alt="' + escapeHTML(s.name) + '">' +
+        '<strong>' + escapeHTML(s.name) + '</strong>' +
+        '</div>';
+    }).join('');
   }
 
-  // ============ LIVE WALL ============
+  /* ================================================
+     LIVE WALL
+  ================================================ */
   let livewallTimer = null;
   let livewallIndex = 0;
   let livewallItems = [];
   let livewallPaused = false;
 
-  async function openLiveWall() {
-    const modal = document.getElementById('livewallModal');
+  function openLiveWall() {
+    const modal = $('livewallModal');
+    if (!modal) return;
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    // Collect items
     livewallItems = [];
 
-    // Photos
     try {
-      const photos = JSON.parse(localStorage.getItem(LS_KEY_PHOTOS) || '[]');
-      photos.forEach(p => livewallItems.push({ type: 'photo', ...p }));
+      const photos = JSON.parse(localStorage.getItem(LS_PHOTOS) || '[]');
+      photos.forEach(function(p) {
+        livewallItems.push({ type: 'photo', data: p.data, name: p.name, caption: p.caption });
+      });
     } catch (e) {}
 
-    // Wishes (RSVP)
     try {
-      const wishes = JSON.parse(localStorage.getItem('weddingWishesSugiantoNovi') || '[]');
-      wishes.forEach(w => livewallItems.push({ type: 'wish', ...w }));
+      const wishes = JSON.parse(localStorage.getItem('wishesSugiantoNovi') || '[]');
+      wishes.forEach(function(w) {
+        livewallItems.push({ type: 'wish', name: w.name, message: w.message });
+      });
     } catch (e) {}
 
-    // Signatures
     try {
-      const sigs = JSON.parse(localStorage.getItem(LS_KEY_SIGN) || '[]');
-      sigs.forEach(s => livewallItems.push({ type: 'signature', ...s }));
+      const sigs = JSON.parse(localStorage.getItem(LS_SIGN) || '[]');
+      sigs.forEach(function(s) {
+        livewallItems.push({ type: 'signature', signature: s.signature, name: s.name, message: s.message });
+      });
     } catch (e) {}
 
-    // Shuffle
-    livewallItems.sort(() => Math.random() - 0.5);
+    livewallItems.sort(function() { return Math.random() - 0.5; });
 
     if (livewallItems.length === 0) {
-      document.getElementById('livewallContent').innerHTML =
-        '<div class="livewall-ornament">囍</div><p class="livewall-wish">Belum ada konten. Bagikan foto & ucapan Anda!</p>';
+      $('livewallContent').innerHTML =
+        '<div class="livewall-ornament">囍</div>' +
+        '<p class="livewall-wish">Belum ada konten. Bagikan foto & ucapan Anda!</p>';
       return;
     }
 
@@ -698,40 +552,35 @@
 
   function showLivewallItem() {
     const item = livewallItems[livewallIndex];
-    const container = document.getElementById('livewallContent');
-    container.style.animation = 'none';
-    void container.offsetWidth;
-    container.style.animation = 'livewallFade 1s ease';
+    const c = $('livewallContent');
+    if (!c) return;
+
+    c.style.animation = 'none';
+    void c.offsetWidth;
+    c.style.animation = 'livewallFade 1s ease';
 
     if (item.type === 'photo') {
-      container.innerHTML = `
-        <img class="livewall-photo" src="${item.url || item.data}" alt="${escapeHtml(item.name)}">
-        <div class="livewall-caption">
-          <strong>${escapeHtml(item.name)}</strong>
-          ${item.caption ? `<p>"${escapeHtml(item.caption)}"</p>` : ''}
-        </div>
-      `;
+      c.innerHTML =
+        '<img class="livewall-photo" src="' + item.data + '" alt="' + escapeHTML(item.name) + '">' +
+        '<div class="livewall-caption"><strong>' + escapeHTML(item.name) + '</strong>' +
+        (item.caption ? '<p>"' + escapeHTML(item.caption) + '"</p>' : '') + '</div>';
     } else if (item.type === 'wish') {
-      container.innerHTML = `
-        <div class="livewall-ornament">囍</div>
-        <p class="livewall-wish">"${escapeHtml(item.message || 'Selamat menempuh hidup baru!')}"</p>
-        <p class="livewall-wish-author">— ${escapeHtml(item.name)}</p>
-      `;
+      c.innerHTML =
+        '<div class="livewall-ornament">囍</div>' +
+        '<p class="livewall-wish">"' + escapeHTML(item.message || 'Selamat menempuh hidup baru!') + '"</p>' +
+        '<p class="livewall-wish-author">— ' + escapeHTML(item.name) + '</p>';
     } else if (item.type === 'signature') {
-      container.innerHTML = `
-        <div class="livewall-ornament">✍</div>
-        <img src="${item.signature}" style="max-width:400px;background:#fff;padding:1rem;border-radius:12px;border:3px solid #d4af37">
-        <div class="livewall-caption">
-          <strong>${escapeHtml(item.name)}</strong>
-          ${item.message ? `<p>"${escapeHtml(item.message)}"</p>` : ''}
-        </div>
-      `;
+      c.innerHTML =
+        '<div class="livewall-ornament">✍</div>' +
+        '<img src="' + item.signature + '" style="max-width:400px;background:#fff;padding:1rem;border-radius:12px;border:3px solid #d4af37">' +
+        '<div class="livewall-caption"><strong>' + escapeHTML(item.name) + '</strong>' +
+        (item.message ? '<p>"' + escapeHTML(item.message) + '"</p>' : '') + '</div>';
     }
   }
 
   function startLivewallTimer() {
     if (livewallTimer) clearInterval(livewallTimer);
-    livewallTimer = setInterval(() => {
+    livewallTimer = setInterval(function() {
       if (livewallPaused) return;
       livewallIndex = (livewallIndex + 1) % livewallItems.length;
       showLivewallItem();
@@ -739,51 +588,34 @@
   }
 
   function closeLiveWall() {
-    document.getElementById('livewallModal').classList.remove('active');
+    const modal = $('livewallModal');
+    if (!modal) return;
+    modal.classList.remove('active');
     document.body.style.overflow = 'auto';
     if (livewallTimer) clearInterval(livewallTimer);
   }
 
-  // Toggle pause on click
-  document.addEventListener('click', (e) => {
+  // Toggle pause
+  document.addEventListener('click', function(e) {
     if (e.target.closest('#livewallContent')) {
       livewallPaused = !livewallPaused;
       showToast(livewallPaused ? '⏸ Paused' : '▶ Playing');
     }
   });
 
-  // ESC closes
-  document.addEventListener('keydown', (e) => {
+  // ESC close
+  document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      if (document.getElementById('livewallModal')?.classList.contains('active')) closeLiveWall();
-      if (document.getElementById('signatureModal')?.classList.contains('active')) closeSignaturePad();
+      const lw = $('livewallModal');
+      const sm = $('signatureModal');
+      if (lw && lw.classList.contains('active')) closeLiveWall();
+      if (sm && sm.classList.contains('active')) closeSignaturePad();
     }
   });
 
-  // ============ UTILS ============
-  function escapeHtml(str) {
-    return String(str || '').replace(/[&<>"']/g, m => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[m]));
-  }
-
-  function showToast(msg) {
-    if (typeof window.showToast === 'function') {
-      window.showToast(msg);
-      return;
-    }
-    const t = document.createElement('div');
-    t.className = 'toast';
-    t.textContent = msg;
-    document.body.appendChild(t);
-    requestAnimationFrame(() => t.classList.add('show'));
-    setTimeout(() => {
-      t.classList.remove('show');
-      setTimeout(() => t.remove(), 500);
-    }, 2500);
-  }
-
-  // ============ EXPOSE GLOBAL ============
+  /* ================================================
+     EXPOSE GLOBAL
+  ================================================ */
   window.submitPhoto = submitPhoto;
   window.openPhotoLightbox = openPhotoLightbox;
   window.openSignaturePad = openSignaturePad;
@@ -793,9 +625,10 @@
   window.openLiveWall = openLiveWall;
   window.closeLiveWall = closeLiveWall;
 
-  // ============ INIT ============
+  /* ================================================
+     INIT
+  ================================================ */
   function init() {
-    initChibi();
     initLantern();
     initPhotoWall();
     initSignaturePad();

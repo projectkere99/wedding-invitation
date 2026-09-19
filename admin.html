@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⚙ Admin Panel · Sugianto & Novi</title>
-  <link rel="stylesheet" href="admin.css">
-  <link rel="stylesheet" href="mobile.css">
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚙ Admin Panel · Sugianto & Novi Mutiara</title>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">囍</div>
     <h1>Admin Panel</h1>
-    <p class="login-sub">Sugianto & Novi Mutirara</p>
+    <p class="login-sub">Sugianto &amp; Novi Mutiara</p>
     <div class="login-form">
-      <input type="password" id="loginPassword" placeholder="Masukkan password admin" autocomplete="current-password">
-      <button onclick="handleLogin()">🔓 Masuk</button>
+      <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+      <button type="button" id="btnLogin">🔓 Masuk</button>
       <p class="login-error" id="loginError"></p>
     </div>
     <a href="index.html" class="back-link">← Kembali ke Undangan</a>
@@ -38,16 +37,16 @@
 
     <nav class="sidebar-nav">
       <a href="#" class="nav-item active" data-tab="overview"><span>📊</span> Overview</a>
-      <a href="#" class="nav-item" data-tab="wishes"><span>💌</span> Ucapan & RSVP</a>
       <a href="#" class="nav-item" data-tab="gallery"><span>🖼️</span> Gallery</a>
-      <a href="#" class="nav-item" data-tab="events"><span>📅</span> Acara</a>
-      <a href="#" class="nav-item" data-tab="couple"><span>💑</span> Mempelai</a>
-      <a href="#" class="nav-item" data-tab="settings"><span>⚙️</span> Pengaturan</a>
+      <a href="#" class="nav-item" data-tab="wishes"><span>💌</span> Ucapan</a>
+      <a href="#" class="nav-item" data-tab="photos"><span>📸</span> Foto</a>
+      <a href="#" class="nav-item" data-tab="signatures"><span>✍️</span> Tanda Tangan</a>
+      <a href="#" class="nav-item" data-tab="lanterns"><span>🏮</span> Lentera</a>
     </nav>
 
     <div class="sidebar-footer">
       <a href="index.html" target="_blank" class="btn-view">👁 Lihat Undangan</a>
-      <button onclick="handleLogout()" class="btn-logout">🚪 Logout</button>
+      <button type="button" id="btnLogout" class="btn-logout">🚪 Logout</button>
     </div>
   </aside>
 
@@ -57,13 +56,18 @@
     <section class="tab-content active" id="tab-overview">
       <div class="page-header">
         <h2>📊 Dashboard Overview</h2>
-        <p class="page-sub">Ringkasan statistik undangan Anda</p>
+        <p class="page-sub">Ringkasan aktivitas undangan</p>
       </div>
 
-      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🖼️</div>
+          <div class="stat-value" id="statGallery">0</div>
+          <div class="stat-label">Gallery</div>
+        </div>
+        <div class="stats-grid">
         <div class="stat-card gold">
           <div class="stat-icon">💌</div>
-          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-value" id="statWishes">0</div>
           <div class="stat-label">Total Ucapan</div>
         </div>
         <div class="stat-card green">
@@ -81,182 +85,145 @@
           <div class="stat-value" id="statRagu">0</div>
           <div class="stat-label">Masih Ragu</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-icon">📸</div>
+          <div class="stat-value" id="statPhotos">0</div>
+          <div class="stat-label">Foto</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✍️</div>
+          <div class="stat-value" id="statSigns">0</div>
+          <div class="stat-label">Tanda Tangan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏮</div>
+          <div class="stat-value" id="statLanterns">0</div>
+          <div class="stat-label">Lentera</div>
+        </div>
       </div>
 
-      <div class="overview-panels">
-        <div class="panel">
-          <h3>📈 Progress Kehadiran</h3>
-          <div class="progress-list" id="progressList"></div>
+      <div class="panel">
+        <h3>📈 Progress Kehadiran</h3>
+        <div id="progressList"></div>
+      </div>
+
+      <div class="panel" style="margin-top:1.2rem">
+        <h3>🕒 Ucapan Terbaru</h3>
+        <div id="recentWishes"></div>
+      </div>
+    </section>
+
+    <!-- GALLERY MANAGER -->
+    <section class="tab-content" id="tab-gallery">
+      <div class="page-header">
+        <h2>🖼️ Gallery Manager</h2>
+        <p class="page-sub">Kelola foto "Our Moments" di undangan — real-time</p>
+      </div>
+
+      <!-- FORM TAMBAH -->
+      <div class="add-gallery-card">
+        <h3>➕ Tambah Gambar Baru</h3>
+
+        <div class="gallery-input-tabs">
+          <button type="button" class="gallery-tab-btn active" data-input="url">🔗 URL</button>
+          <button type="button" class="gallery-tab-btn" data-input="upload">📤 Upload</button>
         </div>
-        <div class="panel">
-          <h3>🕒 Ucapan Terbaru</h3>
-          <div class="recent-wishes" id="recentWishes"></div>
+
+        <!-- URL Input -->
+        <div class="gallery-input-panel" id="galleryUrlPanel">
+          <div class="input-group">
+            <label>URL Gambar</label>
+            <input type="text" id="galleryNewUrl" placeholder="https://... atau assets/cover.jpg">
+            <small>Bisa pakai link Google Drive, Imgur, atau path lokal (assets/xxx.jpg)</small>
+          </div>
+        </div>
+
+        <!-- Upload Input -->
+        <div class="gallery-input-panel hidden" id="galleryUploadPanel">
+          <div class="input-group">
+            <label>Pilih File Gambar</label>
+            <input type="file" id="galleryNewFile" accept="image/*">
+            <small>Format JPG/PNG/WebP · Rekomendasi max 500KB per foto (base64 disimpan di browser)</small>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="input-group">
+          <label>Preview</label>
+          <div class="gallery-preview-box" id="galleryPreviewBox">
+            <p class="preview-placeholder">Preview muncul di sini</p>
+          </div>
+        </div>
+
+        <div class="gallery-form-actions">
+          <button type="button" class="btn-primary" id="btnAddGallery">➕ Tambahkan ke Gallery</button>
+          <button type="button" class="btn-secondary" id="btnResetGallery">↻ Reset ke Default</button>
         </div>
       </div>
+
+      <!-- LIST GALLERY -->
+      <h3 class="section-mini-title">
+        📷 Gallery Saat Ini (<span id="galleryCount">0</span> gambar)
+      </h3>
+      <p class="gallery-hint">💡 Urutan dari atas ke bawah = urutan tampil di undangan. Klik ⬆/⬇ untuk atur posisi.</p>
+
+      <div class="gallery-admin-grid" id="galleryAdminGrid"></div>
     </section>
 
     <!-- WISHES -->
     <section class="tab-content" id="tab-wishes">
       <div class="page-header">
-        <h2>💌 Ucapan & RSVP</h2>
-        <p class="page-sub">Kelola dan lihat semua ucapan tamu</p>
+        <h2>💌 Ucapan &amp; RSVP</h2>
+        <p class="page-sub">Semua ucapan dari tamu</p>
       </div>
 
       <div class="toolbar">
-        <input type="text" id="searchWishes" placeholder="🔍 Cari nama atau ucapan..." oninput="filterWishes()">
-        <select id="filterAttend" onchange="filterWishes()">
-          <option value="">Semua Kehadiran</option>
+        <input type="text" id="searchWishes" placeholder="🔍 Cari nama...">
+        <select id="filterAttend">
+          <option value="">Semua</option>
           <option value="Hadir">Hadir</option>
           <option value="Tidak Hadir">Tidak Hadir</option>
           <option value="Masih Ragu">Masih Ragu</option>
         </select>
-        <button class="btn-primary" onclick="exportCSV()">📥 Export CSV</button>
-        <button class="btn-danger" onclick="confirmClearWishes()">🗑 Hapus Semua</button>
+        <button type="button" class="btn-primary" id="btnExportCSV">📥 CSV</button>
+        <button type="button" class="btn-danger" id="btnClearWishes">🗑 Hapus Semua</button>
       </div>
 
-      <div class="wishes-table-wrapper">
-        <table class="wishes-table">
+      <div class="table-wrapper">
+        <table>
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Nama</th>
-              <th>Kehadiran</th>
-              <th>Ucapan</th>
-              <th>Waktu</th>
-            </tr>
+            <tr><th>#</th><th>Nama</th><th>Kehadiran</th><th>Ucapan</th><th>Waktu</th></tr>
           </thead>
-          <tbody id="wishesTableBody"></tbody>
+          <tbody id="wishesBody"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- GALLERY -->
-    <section class="tab-content" id="tab-gallery">
+    <!-- PHOTOS -->
+    <section class="tab-content" id="tab-photos">
       <div class="page-header">
-        <h2>🖼️ Gallery Manager</h2>
-        <p class="page-sub">Tambah, edit, atau hapus gambar gallery</p>
+        <h2>📸 Photo Wall</h2>
+        <p class="page-sub">Foto yang dikirim tamu</p>
       </div>
-
-      <div class="add-gallery-card">
-        <h3>➕ Tambah Gambar Baru</h3>
-        <div class="input-group">
-          <label>URL Gambar (Google Drive / Imgur / URL langsung)</label>
-          <input type="text" id="newImageUrl" placeholder="https://... atau assets/foto.jpg">
-        </div>
-        <div class="input-group">
-          <label>Atau Upload Gambar (ke Google Drive via GAS)</label>
-          <input type="file" id="newImageFile" accept="image/*" onchange="handleFileUpload(event)">
-          <small>Upload memerlukan GAS setup (lihat GAS-SETUP.md)</small>
-        </div>
-        <div class="input-group">
-          <label>Preview</label>
-          <div class="preview-box" id="previewBox">
-            <p class="preview-placeholder">Preview muncul di sini</p>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="addGalleryImage()">➕ Tambahkan ke Gallery</button>
-      </div>
-
-      <h3 class="section-mini-title">📷 Gallery Saat Ini (<span id="galleryCount">0</span> gambar)</h3>
-      <div class="gallery-admin-grid" id="galleryAdminGrid"></div>
+      <div class="mod-grid" id="photosGrid"></div>
     </section>
 
-    <!-- EVENTS -->
-    <section class="tab-content" id="tab-events">
+    <!-- SIGNATURES -->
+    <section class="tab-content" id="tab-signatures">
       <div class="page-header">
-        <h2>📅 Manage Acara</h2>
-        <p class="page-sub">Edit detail acara pernikahan</p>
+        <h2>✍️ Tanda Tangan</h2>
+        <p class="page-sub">Buku tamu digital</p>
       </div>
-
-      <div id="eventsEditor"></div>
-
-      <div class="form-actions">
-        <button class="btn-primary" onclick="saveEvents()">💾 Simpan Semua Acara</button>
-        <button class="btn-secondary" onclick="loadEventsEditor()">↻ Reset</button>
-        <button class="btn-secondary" onclick="addNewEvent()">➕ Tambah Acara</button>
-      </div>
+      <div class="mod-grid" id="signaturesGrid"></div>
     </section>
 
-    <!-- COUPLE -->
-    <section class="tab-content" id="tab-couple">
+    <!-- LANTERNS -->
+    <section class="tab-content" id="tab-lanterns">
       <div class="page-header">
-        <h2>💑 Info Mempelai</h2>
-        <p class="page-sub">Edit nama dan orang tua mempelai</p>
+        <h2>🏮 Wish Lantern</h2>
+        <p class="page-sub">Harapan dari tamu</p>
       </div>
-
-      <div class="couple-editor">
-        <div class="couple-block">
-          <h3>👨 Mempelai Pria</h3>
-          <div class="input-group">
-            <label>Nama Lengkap</label>
-            <input type="text" id="editGroomName">
-          </div>
-          <div class="input-group">
-            <label>Nama Orang Tua (pisah dengan koma)</label>
-            <input type="text" id="editGroomParents" placeholder="Bapak Sugiharto, Ibu Liem Mei Hwa">
-          </div>
-          <div class="input-group">
-            <label>URL Foto</label>
-            <input type="text" id="editGroomPhoto">
-          </div>
-        </div>
-
-        <div class="couple-block">
-          <h3>👩 Mempelai Wanita</h3>
-          <div class="input-group">
-            <label>Nama Lengkap</label>
-            <input type="text" id="editBrideName">
-          </div>
-          <div class="input-group">
-            <label>Nama Orang Tua (pisah dengan koma)</label>
-            <input type="text" id="editBrideParents" placeholder="Bapak Tan Kok Beng, Ibu Ong Siew Lan">
-          </div>
-          <div class="input-group">
-            <label>URL Foto</label>
-            <input type="text" id="editBridePhoto">
-          </div>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button class="btn-primary" onclick="saveCouple()">💾 Simpan Info Mempelai</button>
-      </div>
-    </section>
-
-    <!-- SETTINGS -->
-    <section class="tab-content" id="tab-settings">
-      <div class="page-header">
-        <h2>⚙️ Pengaturan</h2>
-        <p class="page-sub">Konfigurasi umum undangan</p>
-      </div>
-
-      <div class="settings-block">
-        <div class="input-group">
-          <label>Tanggal Pernikahan (ISO format)</label>
-          <input type="datetime-local" id="editWeddingDate">
-        </div>
-        <div class="input-group">
-          <label>Video YouTube ID (contoh: dQw4w9WgXcQ)</label>
-          <input type="text" id="editVideoId">
-        </div>
-        <div class="input-group">
-          <label>Google Maps Embed URL (src dari iframe)</label>
-          <textarea id="editMapEmbed" rows="3"></textarea>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button class="btn-primary" onclick="saveSettings()">💾 Simpan Pengaturan</button>
-        <button class="btn-secondary" onclick="exportConfig()">📤 Export Config JSON</button>
-        <button class="btn-secondary" onclick="document.getElementById('importConfigFile').click()">📥 Import Config</button>
-        <input type="file" id="importConfigFile" accept=".json" hidden onchange="importConfig(event)">
-      </div>
-
-      <div class="info-box">
-        <h3>ℹ️ Info Setup</h3>
-        <p><strong>Backend URL (GAS):</strong> <span id="gasStatus"></span></p>
-        <p>Jika GAS belum di-setup, semua perubahan hanya tersimpan di browser ini (localStorage). Untuk sinkronisasi antar device, setup GAS dari file GAS-SETUP.md.</p>
-      </div>
+      <div class="mod-list" id="lanternsList"></div>
     </section>
 
   </main>
@@ -264,14 +231,6 @@
 
 <div class="toast-admin" id="toastAdmin"></div>
 
-<script src="config.js"></script>
 <script src="admin.js"></script>
-<script>
-
-  // Fallback: pastikan CONFIG ada
-  window.addEventListener('error', (e) => {
-    console.error('Script error:', e.message, 'pada', e.filename, ':', e.lineno);
-  });
-</script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 // ==========================================
 const CONFIG = {
   groom: "Sugianto",
-  bride: "Novi Mutirara",
+  bride: "Novi Mutiara",
   weddingDate: "2026-09-30T09:00:00",
   gasUrl: "",                    // isi jika sudah setup GAS
   // ===== BACKEND GOOGLE APPS SCRIPT =====
@@ -16,7 +16,7 @@ const CONFIG = {
 
   // ===== GOOGLE MAPS EMBED =====
   // Cara ambil: buka maps.google.com → share → embed a map → copy src iframe
-  mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.5!2d106.8!3d-6.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTInMDAuMCJTIDEwNsKwNDgnMDAuMCJF!5e0!3m2!1sen!2sid!4v1234567890",
+  mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15925.53574551169!2d98.66798923613206!3d3.726183952443338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3036cd6c76a84d65%3A0x954c069b1e6a2274!2sMURNI%20BAN!5e0!3m2!1sen!2skh!4v1789824054998!5m2!1sen!2skh",
 
   // ===== VIDEO PRE-WEDDING =====
   // YouTube video ID (contoh: "dQw4w9WgXcQ")
