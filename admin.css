@@ -128,10 +128,13 @@ body {
 .brand-sub { font-size: .7rem; letter-spacing: 2px; opacity: .7; }
 
 .sidebar-nav {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: .3rem;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: .4rem;
+  padding-bottom: .5rem;
+  align-items: center;  /* ← TAMBAHKAN INI */
+  flex: 0 0 auto;       /* ← TAMBAHKAN INI */
+  max-height: 60px;     /* ← TAMBAHKAN INI */
 }
 .nav-item {
   display: flex;
@@ -144,6 +147,9 @@ body {
   font-size: .9rem;
   transition: all .2s ease;
   cursor: pointer;
+  height: auto;         /* ← TAMBAHKAN INI */
+  align-self: center;   /* ← TAMBAHKAN INI */
+  min-height: auto;     /* ← TAMBAHKAN INI */
 }
 .nav-item:hover { background: rgba(212,175,55,.1); color: var(--gold-light); }
 .nav-item.active {
@@ -480,11 +486,19 @@ table tr:last-child td { border-bottom: none; }
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  .dashboard { grid-template-columns: 1fr; }
+  .dashboard {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    align-content: start;
+  }
   .sidebar {
     position: relative;
     height: auto;
+    min-height: auto;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
   }
   .sidebar-brand { padding-bottom: 1rem; margin-bottom: 1rem; }
   .sidebar-nav {
