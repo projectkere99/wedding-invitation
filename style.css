@@ -913,11 +913,16 @@ main { position: relative; z-index: 1; }
 .gift-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.2rem;
-  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+  width: 100%;
 }
 @media (min-width: 768px) {
-  .gift-grid { grid-template-columns: 1fr 1fr; }
+  .gift-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    max-width: 720px;
   .gift-card.wide { grid-column: span 2; }
 }
 
