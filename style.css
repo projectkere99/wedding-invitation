@@ -802,7 +802,7 @@ main { position: relative; z-index: 1; }
 
 /* ============================================
    GALLERY
-============================================ */
+============================================ 
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -848,9 +848,9 @@ main { position: relative; z-index: 1; }
   transition: opacity .3s;
   z-index: 2;
 }
-.gallery-item:hover::after { opacity: 1; }
+.gallery-item:hover::after { opacity: 1; }*/
 
-/* Lightbox */
+/* Lightbox 
 .lightbox {
   position: fixed;
   inset: 0;
@@ -889,7 +889,7 @@ main { position: relative; z-index: 1; }
 }
 .lightbox-close { top: 15px; right: 15px; }
 .lightbox-nav.prev { left: 15px; top: 50%; transform: translateY(-50%); }
-.lightbox-nav.next { right: 15px; top: 50%; transform: translateY(-50%); }
+.lightbox-nav.next { right: 15px; top: 50%; transform: translateY(-50%); }*/
 
 /* ============================================
    GIFT
