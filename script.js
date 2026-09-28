@@ -19,7 +19,8 @@ const CONFIG = {
     'assets/bride.jpg',
     'assets/cover.jpg',
     'assets/groom.jpg',
-    'assets/bride.jpg'
+    'assets/bride.jpg',
+    'assets/song.mp3'
   ]
 };
 
